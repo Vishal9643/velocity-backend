@@ -11,13 +11,14 @@ module.exports = {
     try {
       result = await authSchema.validateAsync(req.body);
       const doesExist = await usersModel.findOne({ email: result.email });
-      if (doesExist)
-        throw createError.Conflict(`${req.body.email} already existed`);
+      if (doesExist) {
+        res.send(`${req.body.email} already existed`);
+      }
       const user = new usersModel(result);
       const savedUser = await user.save();
       res.send({
         isLoggedIn: true,
-        name: `${doesExist.fname} ${doesExist.lname}`,
+        name: `${req.body.fname} ${req.body.lname}`,
       });
     } catch (error) {
       console.log(error);
